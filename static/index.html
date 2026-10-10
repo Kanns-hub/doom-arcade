@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Freedoom</title>
+    <style>
+        html, body, #jsdos {
+            background: #000;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        * {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+        #status {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            padding: 6px 10px;
+            font: 13px/1.4 Consolas, monospace;
+            color: #0f0;
+            background: rgba(0,0,0,0.7);
+            z-index: 99;
+            white-space: pre-wrap;
+        }
+    </style>
+    <script src="js-dos.js"></script>
+    <link href="js-dos.css" rel="stylesheet">
+</head>
+<body>
+    <div id="jsdos"></div>
+    <div id="status">Загрузка эмулятора...</div>
+    <script>
+        (function () {
+            var statusEl = document.getElementById('status');
+            function log(msg) {
+                statusEl.textContent = msg;
+            }
+
+            try {
+                // js-dos v7: point the loader at the directory holding wdosbox.js/wdosbox.wasm
+                emulators.pathPrefix = '';
+
+                var dos = Dos(document.getElementById('jsdos'), {
+                    withNetworkingApi: false,
+                    withExperimentalApi: false
+                });
+
+                dos.run('freedoom.jsdos').then(function (ci) {
+                    log('FREEDOOM ЗАПУЩЕН\nУправление: стрелки - движение, Ctrl - огонь, Пробел - открыть, Shift - бег');
+                }).catch(function (err) {
+                    log('ОШИБКА ЗАПУСКА:\n' + (err && err.message ? err.message : err));
+                });
+            } catch (e) {
+                log('ОШИБКА ИНИЦИАЛИЗАЦИИ:\n' + (e && e.message ? e.message : e));
+            }
+        })();
+    </script>
+</body>
+</html>
